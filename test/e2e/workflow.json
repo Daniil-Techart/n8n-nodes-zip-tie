@@ -1,0 +1,209 @@
+{
+  "name": "ZipTie Browser E2E",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { stream: 'A' } }];"
+      },
+      "id": "e2e-1-0000-4000-8000-000000000001",
+      "name": "Source A",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { stream: 'B' } }];"
+      },
+      "id": "e2e-2-0000-4000-8000-000000000002",
+      "name": "Source B",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        120
+      ],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { stream: 'C' } }];"
+      },
+      "id": "e2e-3-0000-4000-8000-000000000003",
+      "name": "Source C",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        240
+      ],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "tieColor": "#e5484d",
+        "zipTieGroup": "e2e-group",
+        "zipTieGroupSize": 3
+      },
+      "id": "e2e-4-0000-4000-8000-000000000004",
+      "name": "Zip Tie",
+      "type": "n8n-nodes-zip-tie.zipTie",
+      "typeVersion": 1,
+      "position": [
+        400,
+        0
+      ],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "tieColor": "#e5484d",
+        "zipTieGroup": "e2e-group",
+        "zipTieGroupSize": 3
+      },
+      "id": "e2e-5-0000-4000-8000-000000000005",
+      "name": "Zip Tie 2",
+      "type": "n8n-nodes-zip-tie.zipTie",
+      "typeVersion": 1,
+      "position": [
+        400,
+        10
+      ],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "tieColor": "#e5484d",
+        "zipTieGroup": "e2e-group",
+        "zipTieGroupSize": 3
+      },
+      "id": "e2e-6-0000-4000-8000-000000000006",
+      "name": "Zip Tie 3",
+      "type": "n8n-nodes-zip-tie.zipTie",
+      "typeVersion": 1,
+      "position": [
+        400,
+        20
+      ],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all();"
+      },
+      "id": "e2e-7-0000-4000-8000-000000000007",
+      "name": "Consumer A",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all();"
+      },
+      "id": "e2e-8-0000-4000-8000-000000000008",
+      "name": "Consumer B",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        120
+      ],
+      "disabled": false
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all();"
+      },
+      "id": "e2e-9-0000-4000-8000-000000000009",
+      "name": "Consumer C",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        240
+      ],
+      "disabled": false
+    }
+  ],
+  "connections": {
+    "Source A": {
+      "main": [
+        [
+          {
+            "node": "Zip Tie",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Source B": {
+      "main": [
+        [
+          {
+            "node": "Zip Tie 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Source C": {
+      "main": [
+        [
+          {
+            "node": "Zip Tie 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zip Tie": {
+      "main": [
+        [
+          {
+            "node": "Consumer A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zip Tie 2": {
+      "main": [
+        [
+          {
+            "node": "Consumer B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zip Tie 3": {
+      "main": [
+        [
+          {
+            "node": "Consumer C",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

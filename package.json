@@ -1,0 +1,59 @@
+{
+  "name": "n8n-nodes-zip-tie",
+  "version": "0.4.0-beta.3",
+  "description": "Zip Ties: bundle n8n wires into a movable, colour-coded node that keeps every source and target connected 1:1.",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "zip-tie",
+    "canvas",
+    "workflow",
+    "layout"
+  ],
+  "license": "MIT",
+  "homepage": "https://www.npmjs.com/package/n8n-nodes-zip-tie",
+  "author": {
+    "name": "Zip Ties contributors",
+    "email": "graf3402@bk.ru"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "main": "dist/nodes/ZipTie/ZipTie.node.js",
+  "files": [
+    "dist",
+    "frontend",
+    "docs",
+    "examples",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node scripts/build.js",
+    "prepack": "npm run build",
+    "lint": "n8n-node lint",
+    "lint:syntax": "node --check nodes/ZipTie/ZipTie.node.js && node --check frontend/zip-ties-frontend.js",
+    "test": "node --test test/*.test.js",
+    "e2e": "bash test/e2e/run.sh"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "strict": true,
+    "nodes": [
+      "dist/nodes/ZipTie/ZipTie.node.js"
+    ]
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "peerDependenciesMeta": {
+    "n8n-workflow": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "0.54.4",
+    "eslint": "9.39.4",
+    "playwright": "1.64.1"
+  }
+}

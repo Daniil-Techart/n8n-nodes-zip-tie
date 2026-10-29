@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Unit tests
+        run: npm test
+
+      - name: n8n community lint
+        run: npm run lint
+
+      - name: Package smoke test
+        run: npm pack --dry-run
+
+      - name: Compose example validation
+        env:
+          N8N_ENCRYPTION_KEY: ci-only-placeholder
+        run: docker compose -f examples/docker-compose.yml config >/dev/null
+
+  e2e:
+    name: Browser E2E (n8n ${{ matrix.n8n }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        n8n:
+          - '2.44.7'
+          - '2.46.0'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser E2E
+        env:
+          N8N_VERSION: ${{ matrix.n8n }}
+        run: bash test/e2e/run.sh

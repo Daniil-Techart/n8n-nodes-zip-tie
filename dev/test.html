@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="http://localhost:8099/zip-ties.css" />
+		<style>
+			body { background: #1a1a1a; margin: 0; }
+			.vue-flow__viewport { position: relative; width: 1000px; height: 800px; }
+			.vue-flow__node { position: absolute; width: 110px; height: 40px; background: #333; color: #fff; font: 12px sans-serif; }
+			[data-node-type='n8n-nodes-zip-tie.zipTie'] {
+				width: 110px;
+				height: 120px;
+				background: #2d2d33;
+				border: 1px solid #888;
+				outline: 1px solid #0f0;
+			}
+			[data-test-id='canvas-node'] { color: #e5484d; font: 700 22px sans-serif; text-align: center; padding-top: 40px; }
+			.vue-flow__handle { position: absolute; width: 16px; height: 16px; background: #fff; border-radius: 50%; }
+			svg { position: absolute; inset: 0; overflow: visible; }
+		</style>
+	</head>
+	<body>
+		<div class="vue-flow__viewport">
+			<div class="vue-flow__node" data-id="tie" style="left: 400px; top: 300px; height: 120px">
+				<div data-node-type="n8n-nodes-zip-tie.zipTie" data-node-name="Zip Tie" id="tie">
+					<div class="vue-flow__handle target" data-handleid="inputs/main/0" data-nodeid="tie" data-handlepos="left" style="top: 25%"></div>
+					<div class="vue-flow__handle target" data-handleid="inputs/main/1" data-nodeid="tie" data-handlepos="left" style="top: 75%"></div>
+					<div class="vue-flow__handle source" data-handleid="outputs/main/0" data-nodeid="tie" data-handlepos="right" style="top: 25%"></div>
+					<div class="vue-flow__handle source" data-handleid="outputs/main/1" data-nodeid="tie" data-handlepos="right" style="top: 75%"></div>
+					<div data-test-id="canvas-node"><span id="icon">ZT</span></div>
+				</div>
+			</div>
+
+			<div class="vue-flow__node" data-id="src1" style="left: 400px; top: 50px">Source 1</div>
+			<div class="vue-flow__node" data-id="src2" style="left: 400px; top: 50px">Source 2</div>
+			<div class="vue-flow__node" data-id="dst1" style="left: 400px; top: 650px">Target 1</div>
+			<div class="vue-flow__node" data-id="dst2" style="left: 400px; top: 650px">Target 2</div>
+
+			<svg>
+				<g class="vue-flow__edge" data-id="[src1/outputs/main/0][tie/inputs/main/0]">
+					<g data-test-id="edge" data-target-node-name="Zip Tie"><path class="vue-flow__edge-path" d="M 100 60 L 400 330" stroke="#fff" marker-end="url(#arrow)" /></g>
+				</g>
+				<g class="vue-flow__edge" data-id="[src2/outputs/main/0][tie/inputs/main/1]">
+					<g data-test-id="edge" data-target-node-name="Zip Tie"><path class="vue-flow__edge-path" d="M 100 660 L 400 390" stroke="#fff" marker-end="url(#arrow)" /></g>
+				</g>
+				<g class="vue-flow__edge" data-id="[tie/outputs/main/0][dst1/inputs/main/0]">
+					<g data-test-id="edge" data-target-node-name="Target 1"><path class="vue-flow__edge-path" d="M 500 330 L 800 60" stroke="#fff" marker-end="url(#arrow)" /></g>
+				</g>
+				<g class="vue-flow__edge" data-id="[tie/outputs/main/1][dst2/inputs/main/0]">
+					<g data-test-id="edge" data-target-node-name="Target 2"><path class="vue-flow__edge-path" d="M 500 390 L 800 660" stroke="#fff" marker-end="url(#arrow)" /></g>
+				</g>
+			</svg>
+		</div>
+
+		<script src="http://localhost:8099/zip-ties-frontend.js?v=0.4.0-beta.3"></script>
+	</body>
+</html>

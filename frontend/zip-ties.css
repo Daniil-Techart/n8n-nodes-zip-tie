@@ -1,0 +1,124 @@
+/* Collapse the whole Zip Tie node while custom styles are enabled. */
+[data-node-type='n8n-nodes-zip-tie.zipTie'] {
+	width: 30px !important;
+	height: 20px !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+	overflow: hidden !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	border-radius: 8px !important;
+	background: var(--zt-tie-color, #e5484d) !important;
+}
+
+/* The Vue Flow wrapper must match the compact body, otherwise top/bottom handles sit outside the red block. */
+.vue-flow__node.zt-tie-node {
+	width: 30px !important;
+	height: 20px !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+}
+
+/* Compact block: fill the real node body with the Tie Color and drop the icon/labels. */
+[data-node-type='n8n-nodes-zip-tie.zipTie'] [data-test-id='canvas-default-node'],
+[data-node-type='n8n-nodes-zip-tie.zipTie'] > [data-test-id='canvas-node'] {
+	pointer-events: none !important;
+	flex: 0 0 auto !important;
+	width: 30px !important;
+	height: 20px !important;
+	min-width: 0 !important;
+	min-height: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border-width: 0 !important;
+	background: var(--zt-tie-color, #e5484d) !important;
+	border-color: var(--zt-tie-color, #e5484d) !important;
+	border-radius: 8px !important;
+}
+
+[data-node-type='n8n-nodes-zip-tie.zipTie'] [data-test-id='canvas-default-node'] > *,
+[data-node-type='n8n-nodes-zip-tie.zipTie'] > [data-test-id='canvas-node'] > * {
+	opacity: 0 !important;
+	visibility: hidden !important;
+	pointer-events: none !important;
+}
+
+/* No node toolbar in the compact view. */
+[data-node-type='n8n-nodes-zip-tie.zipTie'] [data-test-id='canvas-node-toolbar'] {
+	display: none !important;
+}
+
+/* Hide handles and their labels while custom styles are enabled; Ctrl+Alt reveals the native node. */
+[data-node-type='n8n-nodes-zip-tie.zipTie'] .vue-flow__handle {
+	opacity: 0 !important;
+	pointer-events: none !important;
+}
+
+/* Incoming edges are plain lines while custom styles are enabled; Ctrl+Alt restores the native arrows. */
+[data-target-node-name='Zip Tie'] .vue-flow__edge-path {
+	marker-end: none !important;
+}
+
+/* Managed ports: neutralise n8n's original left/right render offsets. */
+[data-node-type='n8n-nodes-zip-tie.zipTie']
+	.vue-flow__handle.zt-port-managed
+	> [class*='canvas-node-handle-'] {
+	margin: 0 !important;
+	transform: none !important;
+}
+
+/* Managed port labels, placed relative to the handle itself. */
+[data-node-type='n8n-nodes-zip-tie.zipTie']
+	.vue-flow__handle.zt-port-managed
+	> [class*='canvas-node-handle-']
+	> div:first-child {
+	position: absolute;
+}
+
+[data-node-type='n8n-nodes-zip-tie.zipTie']
+	.vue-flow__handle.zt-port-managed[data-handlepos='top']
+	> [class*='canvas-node-handle-']
+	> div:first-child {
+	top: calc(-1 * var(--spacing--2xs)) !important;
+	left: 50% !important;
+	transform: translate(-50%, -100%) scale(var(--canvas-zoom-compensation-factor, 1)) !important;
+	transform-origin: center bottom !important;
+}
+
+[data-node-type='n8n-nodes-zip-tie.zipTie']
+	.vue-flow__handle.zt-port-managed[data-handlepos='bottom']
+	> [class*='canvas-node-handle-']
+	> div:first-child {
+	top: calc(100% + var(--spacing--2xs)) !important;
+	left: 50% !important;
+	transform: translate(-50%, 0) scale(var(--canvas-zoom-compensation-factor, 1)) !important;
+	transform-origin: center top !important;
+}
+
+[data-node-type='n8n-nodes-zip-tie.zipTie']
+	.vue-flow__handle.zt-port-managed[data-handlepos='left']
+	> [class*='canvas-node-handle-']
+	> div:first-child {
+	top: 50% !important;
+	left: calc(-1 * var(--spacing--2xs)) !important;
+	transform: translate(-100%, -50%) scale(var(--canvas-zoom-compensation-factor, 1)) !important;
+	transform-origin: right center !important;
+}
+
+[data-node-type='n8n-nodes-zip-tie.zipTie']
+	.vue-flow__handle.zt-port-managed[data-handlepos='right']
+	> [class*='canvas-node-handle-']
+	> div:first-child {
+	top: 50% !important;
+	left: calc(100% + var(--spacing--2xs)) !important;
+	transform: translate(0, -50%) scale(var(--canvas-zoom-compensation-factor, 1)) !important;
+	transform-origin: left center !important;
+}
+
+/* All pair nodes of one visual tie share the selection highlight. */
+.zt-tie-node.zt-group-selected {
+	outline: 2px solid var(--color-primary, #ff6d5a) !important;
+	outline-offset: 3px !important;
+	border-radius: 10px !important;
+}

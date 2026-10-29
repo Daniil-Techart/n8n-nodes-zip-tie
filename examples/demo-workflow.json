@@ -1,0 +1,77 @@
+{
+  "name": "ZipTie UI Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "a0000001-0000-4000-8000-000000000001",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 60]
+    },
+    {
+      "parameters": { "jsCode": "return [{ json: { stream: 'A' } }];" },
+      "id": "a0000002-0000-4000-8000-000000000002",
+      "name": "Source A",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, -180]
+    },
+    {
+      "parameters": { "jsCode": "return [{ json: { stream: 'B' } }];" },
+      "id": "a0000003-0000-4000-8000-000000000003",
+      "name": "Source B",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 20]
+    },
+    {
+      "parameters": { "jsCode": "return [{ json: { stream: 'C' } }];" },
+      "id": "a0000004-0000-4000-8000-000000000004",
+      "name": "Source C",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 220]
+    },
+    {
+      "parameters": { "jsCode": "return $input.all();" },
+      "id": "a0000005-0000-4000-8000-000000000005",
+      "name": "Consumer A",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [760, -180]
+    },
+    {
+      "parameters": { "jsCode": "return $input.all();" },
+      "id": "a0000006-0000-4000-8000-000000000006",
+      "name": "Consumer B",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [760, 20]
+    },
+    {
+      "parameters": { "jsCode": "return $input.all();" },
+      "id": "a0000007-0000-4000-8000-000000000007",
+      "name": "Consumer C",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [760, 220]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          { "node": "Source A", "type": "main", "index": 0 },
+          { "node": "Source B", "type": "main", "index": 0 },
+          { "node": "Source C", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Source A": { "main": [[{ "node": "Consumer A", "type": "main", "index": 0 }]] },
+    "Source B": { "main": [[{ "node": "Consumer B", "type": "main", "index": 0 }]] },
+    "Source C": { "main": [[{ "node": "Consumer C", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}
