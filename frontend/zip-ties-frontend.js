@@ -1,5 +1,5 @@
 (() => {
-	const version = '0.4.0-beta.3';
+	const version = '0.4.0-beta.4';
 	const scriptSrc =
 		document.currentScript?.src ||
 		document.querySelector('script[src*="zip-ties-frontend.js"]')?.src ||

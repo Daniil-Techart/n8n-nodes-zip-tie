@@ -2,7 +2,7 @@
 
 Turn a bundle of connections into a compact, colour-coded **Zip Tie**. Hold **X** and drag across several wires: every crossed connection gets its own single-pair pass-through node, visually grouped into one small block. The original sources and targets stay connected.
 
-> **Beta `0.4.0-beta.3`**  
+> **Beta `0.4.0-beta.4`**  
 > Tested with self-hosted **n8n 2.44.7** and **2.46.0** on Node.js **24+**. The editor overlay reads n8n internals and must be checked after n8n upgrades. n8n Cloud is not supported because it does not expose `EXTERNAL_FRONTEND_HOOKS_URLS`.
 
 > **Non-standard distribution model:** This is not a regular community node package. The backend node follows n8n package conventions, but the compact canvas UI is injected through the self-hosted `EXTERNAL_FRONTEND_HOOKS_URLS` hook and manipulates n8n's editor internals. It is not an official n8n plugin API, is not available on n8n Cloud, and is not a candidate for the verified community node catalogue. Installing only the node package gives you a working pass-through node without the compact overlay.
@@ -70,39 +70,28 @@ There are three parts: install the node package, host the frontend files, and te
 
 ### 1. Install the node package
 
-The beta is not published on npm yet, so install it from a local tarball.
+The beta is published on npm as `0.4.0-beta.4` under the `beta` tag.
 
-From the repository:
+For a normal n8n installation:
 
 ```sh
-npm install
-npm run build
-npm pack
+cd ~/.n8n/nodes
+npm install n8n-nodes-zip-tie@0.4.0-beta.4
 ```
 
-That creates `n8n-nodes-zip-tie-0.4.0-beta.3.tgz`.
+You can also install `n8n-nodes-zip-tie@beta` to follow the beta tag. The `latest` tag also points at the current beta until a stable release is published.
 
-#### Docker: install into the n8n volume
-
-Set the container name and tarball path, then copy the tarball into the container:
+For Docker, install into the correct n8n user folder:
 
 ```sh
 N8N_CONTAINER=n8n-n8n-1
-TARBALL="$PWD/n8n-nodes-zip-tie-0.4.0-beta.3.tgz"
 
-docker cp "$TARBALL" "$N8N_CONTAINER":/tmp/n8n-nodes-zip-tie.tgz
-```
-
-Install it into the correct user folder. The helper below handles both common layouts: `~/.n8n` and the double `.n8n/.n8n` layout used when `N8N_USER_FOLDER=/home/node/.n8n`:
-
-```sh
 docker exec "$N8N_CONTAINER" sh -lc '
   set -e
   ROOT="${N8N_USER_FOLDER:-/home/node/.n8n}"
   if [ -d "$ROOT/.n8n" ]; then ROOT="$ROOT/.n8n"; fi
-  mkdir -p "$ROOT/nodes"
   cd "$ROOT/nodes"
-  npm install /tmp/n8n-nodes-zip-tie.tgz --omit=dev
+  npm install n8n-nodes-zip-tie@0.4.0-beta.4
 '
 docker restart "$N8N_CONTAINER"
 ```
@@ -113,25 +102,42 @@ The package is installed when this directory exists and contains `dist/nodes/Zip
 <user-folder>/nodes/node_modules/n8n-nodes-zip-tie/
 ```
 
-On a non-Docker installation:
+The same package is available from **Settings → Community nodes → Install**. Use `n8n-nodes-zip-tie` (latest) or the exact beta version. n8n Cloud only accepts verified community nodes, and this package is not verified.
+
+#### Local tarball for offline/development installs
+
+From the repository:
+
+```sh
+npm install
+npm run build
+npm pack
+```
+
+That creates `n8n-nodes-zip-tie-0.4.0-beta.4.tgz`. Install it into n8n:
+
+```sh
+docker cp "$PWD/n8n-nodes-zip-tie-0.4.0-beta.4.tgz" \
+  "$N8N_CONTAINER:/tmp/n8n-nodes-zip-tie.tgz"
+
+docker exec "$N8N_CONTAINER" sh -lc '
+  set -e
+  ROOT="${N8N_USER_FOLDER:-/home/node/.n8n}"
+  if [ -d "$ROOT/.n8n" ]; then ROOT="$ROOT/.n8n"; fi
+  cd "$ROOT/nodes"
+  npm install /tmp/n8n-nodes-zip-tie.tgz --omit=dev
+'
+docker restart "$N8N_CONTAINER"
+```
+
+For a non-Docker installation:
 
 ```sh
 cd ~/.n8n/nodes
-npm install /path/to/n8n-nodes-zip-tie-0.4.0-beta.3.tgz --omit=dev
+npm install /path/to/n8n-nodes-zip-tie-0.4.0-beta.4.tgz --omit=dev
 ```
 
 Then restart n8n.
-
-#### npm or the n8n UI
-
-Once the package is published, either install `n8n-nodes-zip-tie` from **Settings → Community nodes → Install**, or use:
-
-```sh
-cd ~/.n8n/nodes
-npm install n8n-nodes-zip-tie
-```
-
-The beta tarball above is the supported path until then. n8n Cloud only accepts verified community nodes, and this package is not verified.
 
 ### 2. Host the frontend files
 
@@ -162,13 +168,28 @@ For a shared installation:
 Example URL:
 
 ```text
-https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.3
+https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.4
 ```
 
-If the package is later published, a pinned jsDelivr URL also works:
+You do **not** need npm to serve the script from the repository. Use jsDelivr's GitHub endpoint with a tag or commit, not `raw.githubusercontent.com`:
 
 ```text
-https://cdn.jsdelivr.net/npm/n8n-nodes-zip-tie@0.4.0-beta.3/frontend/zip-ties-frontend.js
+https://cdn.jsdelivr.net/gh/Daniil-Techart/n8n-nodes-zip-tie@v0.4.0-beta.4/frontend/zip-ties-frontend.js
+```
+
+Create and push the tag first if it does not exist:
+
+```sh
+git tag v0.4.0-beta.4
+git push origin v0.4.0-beta.4
+```
+
+jsDelivr serves JavaScript and CSS with correct MIME types. `raw.githubusercontent.com` serves `text/plain` with `X-Content-Type-Options: nosniff`, so browsers may refuse the script and stylesheet.
+
+After npm publication, the npm jsDelivr URL is also available:
+
+```text
+https://cdn.jsdelivr.net/npm/n8n-nodes-zip-tie@0.4.0-beta.4/frontend/zip-ties-frontend.js
 ```
 
 ### 3. Point n8n at the frontend
@@ -176,7 +197,7 @@ https://cdn.jsdelivr.net/npm/n8n-nodes-zip-tie@0.4.0-beta.3/frontend/zip-ties-fr
 Add this environment variable to the n8n service and restart it:
 
 ```sh
-EXTERNAL_FRONTEND_HOOKS_URLS=https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.3
+EXTERNAL_FRONTEND_HOOKS_URLS=https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.4
 ```
 
 For Docker Compose:
@@ -185,7 +206,7 @@ For Docker Compose:
 services:
   n8n:
     environment:
-      - EXTERNAL_FRONTEND_HOOKS_URLS=https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.3
+      - EXTERNAL_FRONTEND_HOOKS_URLS=https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.4
 ```
 
 The URL is loaded by the **browser**, not by the n8n container. Do not use `localhost` when other people open n8n from another computer.
@@ -217,7 +238,7 @@ The example is for local/LAN HTTP testing. For anything shared or internet-facin
    [zip-ties-ui] Ctrl mode active
    ```
 
-3. Open the Network tab and confirm `zip-ties-frontend.js?v=0.4.0-beta.3` and `zip-ties.css?v=0.4.0-beta.3` return HTTP 200.
+3. Open the Network tab and confirm `zip-ties-frontend.js?v=0.4.0-beta.4` and `zip-ties.css?v=0.4.0-beta.4` return HTTP 200.
 4. Hold **X**, drag across a few main connections, and confirm the compact red block appears.
 5. Double-click the block and confirm the settings panel opens with **Tie Color**. It should not show **Pairs** or **Port Layout**.
 6. Change the colour, close the panel, and confirm the block updates.
@@ -397,12 +418,12 @@ N8N_ENCRYPTION_KEY=<existing persistent key>
    npm pack
    ```
 
-   Require all commands to exit 0. The tarball is `n8n-nodes-zip-tie-0.4.0-beta.3.tgz`.
+   Require all commands to exit 0. The tarball is `n8n-nodes-zip-tie-0.4.0-beta.4.tgz`.
 
 3. **Install the node in n8n**
 
    ```sh
-   docker cp "$REPO_DIR/n8n-nodes-zip-tie-0.4.0-beta.3.tgz" \
+   docker cp "$REPO_DIR/n8n-nodes-zip-tie-0.4.0-beta.4.tgz" \
      "$N8N_CONTAINER:/tmp/n8n-nodes-zip-tie.tgz"
    docker exec "$N8N_CONTAINER" sh -lc '
      set -e
@@ -441,7 +462,7 @@ N8N_ENCRYPTION_KEY=<existing persistent key>
    Set exactly one URL, pinned to the beta version:
 
    ```sh
-   EXTERNAL_FRONTEND_HOOKS_URLS=$FRONTEND_BASE_URL/zip-ties-frontend.js?v=0.4.0-beta.3
+   EXTERNAL_FRONTEND_HOOKS_URLS=$FRONTEND_BASE_URL/zip-ties-frontend.js?v=0.4.0-beta.4
    ```
 
    Add it to the n8n service's environment (Compose, systemd, or the container definition), then recreate/restart n8n. Verify the running process:
@@ -455,7 +476,7 @@ N8N_ENCRYPTION_KEY=<existing persistent key>
    Open `N8N_HOST_FOR_BROWSER` in Chromium with DevTools open and check:
 
    - console contains `[zip-ties-ui] Ctrl mode active`;
-   - Network contains `zip-ties-frontend.js?v=0.4.0-beta.3` and `zip-ties.css?v=0.4.0-beta.3`;
+   - Network contains `zip-ties-frontend.js?v=0.4.0-beta.4` and `zip-ties.css?v=0.4.0-beta.4`;
    - a workflow with a tie shows compact red blocks;
    - double-click opens **Tie Color** and does **not** show **Pairs** or **Port Layout**;
    - changing the colour updates the block after closing the panel;
