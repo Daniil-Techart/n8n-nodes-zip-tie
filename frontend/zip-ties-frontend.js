@@ -1,5 +1,5 @@
 (() => {
-	const version = '0.4.0-beta.5';
+	const version = '0.4.0-beta.6';
 	const scriptSrc =
 		document.currentScript?.src ||
 		document.querySelector('script[src*="zip-ties-frontend.js"]')?.src ||
@@ -177,17 +177,25 @@
 	const oppositeSide = (side) =>
 		side === 'top' ? 'bottom' : side === 'bottom' ? 'top' : side === 'left' ? 'right' : 'left';
 
-	function positionGroup(items, side) {
-		const axis = side === 'top' || side === 'bottom' ? 'x' : 'y';
-		items.sort(
-			(a, b) =>
-				(a.average?.[axis] ?? 0) - (b.average?.[axis] ?? 0) ||
-				a.index - b.index,
-		);
-		items.forEach((item, index) => {
-			item.side = side;
-			item.position = ((index + 1) / (items.length + 1)) * 100;
-		});
+	function positionPorts(items) {
+		const bySide = new Map();
+		for (const item of items) {
+			if (!item.side) continue;
+			if (!bySide.has(item.side)) bySide.set(item.side, []);
+			bySide.get(item.side).push(item);
+		}
+
+		for (const [side, sideItems] of bySide) {
+			const axis = side === 'top' || side === 'bottom' ? 'x' : 'y';
+			sideItems.sort(
+				(a, b) =>
+					(a.average?.[axis] ?? 0) - (b.average?.[axis] ?? 0) ||
+					a.index - b.index,
+			);
+			sideItems.forEach((item, index) => {
+				item.position = ((index + 1) / (sideItems.length + 1)) * 100;
+			});
+		}
 	}
 
 	const measuring = new WeakSet();
@@ -337,15 +345,6 @@
 			});
 		}
 
-		const groupVectors = new Map();
-		for (const data of tieData) {
-			if (!data.groupId) continue;
-			const bucket = groupVectors.get(data.groupId) ?? { input: [], output: [] };
-			bucket.input.push(...data.inputVectors);
-			bucket.output.push(...data.outputVectors);
-			groupVectors.set(data.groupId, bucket);
-		}
-
 		for (const data of tieData) {
 			let inputSide;
 			let outputSide;
@@ -362,17 +361,14 @@
 			} else if (data.layoutMode === 'verticalReverse') {
 				inputSide = 'bottom';
 				outputSide = 'top';
-			} else if (data.groupId) {
-				const bucket = groupVectors.get(data.groupId);
-				inputSide = chooseSide(bucket?.input ?? [], 'left');
-				outputSide = oppositeSide(inputSide);
 			} else {
 				inputSide = chooseSide(data.inputVectors, 'left');
-				outputSide = oppositeSide(inputSide);
+				outputSide = chooseSide(data.outputVectors, oppositeSide(inputSide));
 			}
 
-			positionGroup(data.inputItems, inputSide);
-			positionGroup(data.outputItems, outputSide);
+			for (const item of data.inputItems) item.side = inputSide;
+			for (const item of data.outputItems) item.side = outputSide;
+			positionPorts([...data.inputItems, ...data.outputItems]);
 
 			let changed = false;
 			let sideChanged = false;

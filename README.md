@@ -2,28 +2,28 @@
 
 Turn a bundle of connections into a compact, colour-coded **Zip Tie**. Hold **X** and drag across several wires: every crossed connection gets its own single-pair pass-through node, visually grouped into one small block. The original sources and targets stay connected.
 
-> **Beta `0.4.0-beta.5`**  
+> **Beta `0.4.0-beta.6`**  
 > Tested with self-hosted **n8n 2.44.7** and **2.46.0** on Node.js **24+**. The editor overlay reads n8n internals and must be checked after n8n upgrades. n8n Cloud is not supported because it does not expose `EXTERNAL_FRONTEND_HOOKS_URLS`.
 
 > **Non-standard distribution model:** This is not a regular community node package. The backend node follows n8n package conventions, but the compact canvas UI is injected through the self-hosted `EXTERNAL_FRONTEND_HOOKS_URLS` hook and manipulates n8n's editor internals. It is not an official n8n plugin API, is not available on n8n Cloud, and is not a candidate for the verified community node catalogue. Installing only the node package gives you a working pass-through node without the compact overlay.
 
-![Compact Zip Tie](https://raw.githubusercontent.com/Daniil-Techart/n8n-nodes-zip-tie/v0.4.0-beta.5/docs/compact.png)
+![Compact Zip Tie](https://raw.githubusercontent.com/Daniil-Techart/n8n-nodes-zip-tie/v0.4.0-beta.6/docs/compact.png)
 
 The editor overlay provides the compact look: no icon, labels, handles or incoming arrowheads. **Double-click** a compact tie to open its settings and change **Tie Color**. `Ctrl+Alt` still switches the whole custom layer off when you need the full native node.
 
-![Tie settings](https://raw.githubusercontent.com/Daniil-Techart/n8n-nodes-zip-tie/v0.4.0-beta.5/docs/settings.png)
+![Tie settings](https://raw.githubusercontent.com/Daniil-Techart/n8n-nodes-zip-tie/v0.4.0-beta.6/docs/settings.png)
 
 Execution is 1:1: input `i` is passed to output `i`. Data is never merged, so items, binary data and `pairedItem` stay on their original branch.
 
 Because every crossed edge runs on its own pair node, a slow branch does not hold up the others. In the screenshot, **Consumer A** has already completed while the **Wait** branch is still running.
 
-![Execution](https://raw.githubusercontent.com/Daniil-Techart/n8n-nodes-zip-tie/v0.4.0-beta.5/docs/executed.png)
+![Execution](https://raw.githubusercontent.com/Daniil-Techart/n8n-nodes-zip-tie/v0.4.0-beta.6/docs/executed.png)
 
 ## Demo
 
 A 12-second example: X-drag creates the compact ties, then the workflow executes without waiting for the slow branch.
 
-[![Watch the Zip Ties demo](https://raw.githubusercontent.com/Daniil-Techart/n8n-nodes-zip-tie/v0.4.0-beta.5/docs/demo-poster.jpg)](https://github.com/Daniil-Techart/n8n-nodes-zip-tie/blob/v0.4.0-beta.5/docs/demo.mp4)
+[![Watch the Zip Ties demo](https://raw.githubusercontent.com/Daniil-Techart/n8n-nodes-zip-tie/v0.4.0-beta.6/docs/demo-poster.jpg)](https://github.com/Daniil-Techart/n8n-nodes-zip-tie/blob/v0.4.0-beta.6/docs/demo.mp4)
 
 Click the preview to open the video on GitHub. The direct GitHub video page is used because npm does not reliably render embedded `<video>` elements.
 
@@ -39,7 +39,7 @@ Click the preview to open the video on GitHub. The direct GitHub video page is u
 - **Ctrl+C / Ctrl+V** copies and pastes a complete tie group as one unit.
 - **Ctrl+Z** removes the most recent tie insertion or pasted group.
 - Ties are ordinary n8n nodes and are saved with the workflow.
-- New nodes are single-pair; ports are placed automatically: inputs use the majority side, outputs use the opposite side.
+- New nodes are single-pair; each pair’s input faces its source and output faces its target. If both are on the same side, the ports are separated instead of forcing a left/right loop.
 - **Pairs** and **Port Layout** are not shown in the node settings anymore. **Wait for All Inputs** remains for legacy multi-pair nodes.
 
 ## Non-standard approach
@@ -70,13 +70,13 @@ There are three parts: install the node package, host the frontend files, and te
 
 ### 1. Install the node package
 
-The beta is published on npm as `0.4.0-beta.5` under the `beta` tag.
+The beta is published on npm as `0.4.0-beta.6` under the `beta` tag.
 
 For a normal n8n installation:
 
 ```sh
 cd ~/.n8n/nodes
-npm install n8n-nodes-zip-tie@0.4.0-beta.5
+npm install n8n-nodes-zip-tie@0.4.0-beta.6
 ```
 
 You can also install `n8n-nodes-zip-tie@beta` to follow the beta tag. The `latest` tag also points at the current beta until a stable release is published.
@@ -91,7 +91,7 @@ docker exec "$N8N_CONTAINER" sh -lc '
   ROOT="${N8N_USER_FOLDER:-/home/node/.n8n}"
   if [ -d "$ROOT/.n8n" ]; then ROOT="$ROOT/.n8n"; fi
   cd "$ROOT/nodes"
-  npm install n8n-nodes-zip-tie@0.4.0-beta.5
+  npm install n8n-nodes-zip-tie@0.4.0-beta.6
 '
 docker restart "$N8N_CONTAINER"
 ```
@@ -114,10 +114,10 @@ npm run build
 npm pack
 ```
 
-That creates `n8n-nodes-zip-tie-0.4.0-beta.5.tgz`. Install it into n8n:
+That creates `n8n-nodes-zip-tie-0.4.0-beta.6.tgz`. Install it into n8n:
 
 ```sh
-docker cp "$PWD/n8n-nodes-zip-tie-0.4.0-beta.5.tgz" \
+docker cp "$PWD/n8n-nodes-zip-tie-0.4.0-beta.6.tgz" \
   "$N8N_CONTAINER:/tmp/n8n-nodes-zip-tie.tgz"
 
 docker exec "$N8N_CONTAINER" sh -lc '
@@ -134,7 +134,7 @@ For a non-Docker installation:
 
 ```sh
 cd ~/.n8n/nodes
-npm install /path/to/n8n-nodes-zip-tie-0.4.0-beta.5.tgz --omit=dev
+npm install /path/to/n8n-nodes-zip-tie-0.4.0-beta.6.tgz --omit=dev
 ```
 
 Then restart n8n.
@@ -168,20 +168,20 @@ For a shared installation:
 Example URL:
 
 ```text
-https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.5
+https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.6
 ```
 
 You do **not** need npm to serve the script from the repository. Use jsDelivr's GitHub endpoint with a tag or commit, not `raw.githubusercontent.com`:
 
 ```text
-https://cdn.jsdelivr.net/gh/Daniil-Techart/n8n-nodes-zip-tie@v0.4.0-beta.5/frontend/zip-ties-frontend.js
+https://cdn.jsdelivr.net/gh/Daniil-Techart/n8n-nodes-zip-tie@v0.4.0-beta.6/frontend/zip-ties-frontend.js
 ```
 
 Create and push the tag first if it does not exist:
 
 ```sh
-git tag v0.4.0-beta.5
-git push origin v0.4.0-beta.5
+git tag v0.4.0-beta.6
+git push origin v0.4.0-beta.6
 ```
 
 jsDelivr serves JavaScript and CSS with correct MIME types. `raw.githubusercontent.com` serves `text/plain` with `X-Content-Type-Options: nosniff`, so browsers may refuse the script and stylesheet.
@@ -189,7 +189,7 @@ jsDelivr serves JavaScript and CSS with correct MIME types. `raw.githubuserconte
 After npm publication, the npm jsDelivr URL is also available:
 
 ```text
-https://cdn.jsdelivr.net/npm/n8n-nodes-zip-tie@0.4.0-beta.5/frontend/zip-ties-frontend.js
+https://cdn.jsdelivr.net/npm/n8n-nodes-zip-tie@0.4.0-beta.6/frontend/zip-ties-frontend.js
 ```
 
 ### 3. Point n8n at the frontend
@@ -197,7 +197,7 @@ https://cdn.jsdelivr.net/npm/n8n-nodes-zip-tie@0.4.0-beta.5/frontend/zip-ties-fr
 Add this environment variable to the n8n service and restart it:
 
 ```sh
-EXTERNAL_FRONTEND_HOOKS_URLS=https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.5
+EXTERNAL_FRONTEND_HOOKS_URLS=https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.6
 ```
 
 For Docker Compose:
@@ -206,14 +206,14 @@ For Docker Compose:
 services:
   n8n:
     environment:
-      - EXTERNAL_FRONTEND_HOOKS_URLS=https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.5
+      - EXTERNAL_FRONTEND_HOOKS_URLS=https://your-host.example/zip-ties/zip-ties-frontend.js?v=0.4.0-beta.6
 ```
 
 The URL is loaded by the **browser**, not by the n8n container. Do not use `localhost` when other people open n8n from another computer.
 
 ### Docker Compose example
 
-[`examples/docker-compose.yml`](https://github.com/Daniil-Techart/n8n-nodes-zip-tie/blob/v0.4.0-beta.5/examples/docker-compose.yml) contains a complete local example with n8n and the nginx frontend.
+[`examples/docker-compose.yml`](https://github.com/Daniil-Techart/n8n-nodes-zip-tie/blob/v0.4.0-beta.6/examples/docker-compose.yml) contains a complete local example with n8n and the nginx frontend.
 
 Create a persistent encryption key first:
 
@@ -238,7 +238,7 @@ The example is for local/LAN HTTP testing. For anything shared or internet-facin
    [zip-ties-ui] Ctrl mode active
    ```
 
-3. Open the Network tab and confirm `zip-ties-frontend.js?v=0.4.0-beta.5` and `zip-ties.css?v=0.4.0-beta.5` return HTTP 200.
+3. Open the Network tab and confirm `zip-ties-frontend.js?v=0.4.0-beta.6` and `zip-ties.css?v=0.4.0-beta.6` return HTTP 200.
 4. Hold **X**, drag across a few main connections, and confirm the compact red block appears.
 5. Double-click the block and confirm the settings panel opens with **Tie Color**. It should not show **Pairs** or **Port Layout**.
 6. Change the colour, close the panel, and confirm the block updates.
@@ -266,7 +266,7 @@ The X gesture only intercepts **main** connections. It ignores AI/tool connectio
 - `nodes/ZipTie/ZipTie.node.js` is a pass-through node. New nodes use one input/output pair; `execute()` returns `getInputData(i)` at output `i`. Legacy `pairs` values remain readable.
 - `frontend/zip-ties-frontend.js` is injected into the editor by `EXTERNAL_FRONTEND_HOOKS_URLS`. It samples edge paths, finds the active workflow store, creates one tie node per crossed connection, rewires the connections, and applies the compact visual state.
 - Pair nodes in one visual tie share a hidden `zipTieGroup` id. They are laid out with a 10 px vertical stagger.
-- Port sides are computed automatically from connected source positions. Outputs are placed on the opposite side.
+- Port sides are computed per pair from the connected source and target positions. There is no fixed left-input/right-output lock; same-side ports are separated along the edge.
 - Ctrl+C/Ctrl+V use an in-memory group clipboard. Ctrl+Z removes an inserted tie or a pasted group as one action.
 - A single pair node copied with the native n8n clipboard is detached from its original group automatically, so it cannot corrupt the source tie.
 
@@ -418,12 +418,12 @@ N8N_ENCRYPTION_KEY=<existing persistent key>
    npm pack
    ```
 
-   Require all commands to exit 0. The tarball is `n8n-nodes-zip-tie-0.4.0-beta.5.tgz`.
+   Require all commands to exit 0. The tarball is `n8n-nodes-zip-tie-0.4.0-beta.6.tgz`.
 
 3. **Install the node in n8n**
 
    ```sh
-   docker cp "$REPO_DIR/n8n-nodes-zip-tie-0.4.0-beta.5.tgz" \
+   docker cp "$REPO_DIR/n8n-nodes-zip-tie-0.4.0-beta.6.tgz" \
      "$N8N_CONTAINER:/tmp/n8n-nodes-zip-tie.tgz"
    docker exec "$N8N_CONTAINER" sh -lc '
      set -e
@@ -462,7 +462,7 @@ N8N_ENCRYPTION_KEY=<existing persistent key>
    Set exactly one URL, pinned to the beta version:
 
    ```sh
-   EXTERNAL_FRONTEND_HOOKS_URLS=$FRONTEND_BASE_URL/zip-ties-frontend.js?v=0.4.0-beta.5
+   EXTERNAL_FRONTEND_HOOKS_URLS=$FRONTEND_BASE_URL/zip-ties-frontend.js?v=0.4.0-beta.6
    ```
 
    Add it to the n8n service's environment (Compose, systemd, or the container definition), then recreate/restart n8n. Verify the running process:
@@ -476,7 +476,7 @@ N8N_ENCRYPTION_KEY=<existing persistent key>
    Open `N8N_HOST_FOR_BROWSER` in Chromium with DevTools open and check:
 
    - console contains `[zip-ties-ui] Ctrl mode active`;
-   - Network contains `zip-ties-frontend.js?v=0.4.0-beta.5` and `zip-ties.css?v=0.4.0-beta.5`;
+   - Network contains `zip-ties-frontend.js?v=0.4.0-beta.6` and `zip-ties.css?v=0.4.0-beta.6`;
    - a workflow with a tie shows compact red blocks;
    - double-click opens **Tie Color** and does **not** show **Pairs** or **Port Layout**;
    - changing the colour updates the block after closing the panel;

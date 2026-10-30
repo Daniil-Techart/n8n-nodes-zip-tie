@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-zip-tie",
-  "version": "0.4.0-beta.5",
+  "version": "0.4.0-beta.6",
   "description": "Zip Ties: bundle n8n wires into a movable, colour-coded node that keeps every source and target connected 1:1.",
   "keywords": [
     "n8n-community-node-package",
